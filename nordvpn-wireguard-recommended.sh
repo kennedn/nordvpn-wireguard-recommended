@@ -25,8 +25,10 @@ Select a NordVPN country and print recommended NordLynx config
 Options:
   --wg
         output WireGuard config (default)
+  --uci-full
+        output Full OpenWRT UCI commands for initial setup of wireguard interface
   --uci
-        output OpenWRT UCI commands
+        output OpenWRT UCI commands for updating a pre-existing wireguard interface
   -h, --help
         print this message
 EOF
@@ -37,6 +39,10 @@ SEARCH_QUERY=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
+    --uci-full)
+      OUTPUT_MODE="uci-full"
+      shift
+      ;;
     --uci)
       OUTPUT_MODE="uci"
       shift
@@ -110,7 +116,7 @@ PublicKey = \(.publickey)
 AllowedIPs = 0.0.0.0/0, ::/0
 Endpoint = \(.station):51820
 PersistentKeepalive = 25"' <<<"${raw_json}"
-else
+elif [ "${OUTPUT_MODE}" == "uci-full" ]; then
   jq -r --arg privateKey "$private_key" '
   .[]
   | {
@@ -132,7 +138,23 @@ uci set network.@wireguard_wg0[-1].public_key='\''\(.publickey)'\''
 uci set network.@wireguard_wg0[-1].endpoint_host='\''\(.station)'\''
 uci set network.@wireguard_wg0[-1].endpoint_port='\''51820'\''
 uci add_list network.@wireguard_wg0[-1].allowed_ips='\''0.0.0.0/0'\''
-uci add_list network.@wireguard_wg0[-1].allowed_ips='\''::/0'\''
 uci set network.@wireguard_wg0[-1].persistent_keepalive='\''25'\''"
+  ' <<< "${raw_json}"
+elif [ "${OUTPUT_MODE}" == "uci" ]; then
+  jq -r '
+  .[]
+  | {
+      publickey: (
+        .technologies[]
+        | select(.identifier == "wireguard_udp")
+        | .metadata[]
+        | select(.name == "public_key")
+        | .value
+      ),
+      station
+    }
+  | "uci set network.@wireguard_wg0[-1].public_key='\''\(.publickey)'\''
+uci set network.@wireguard_wg0[-1].endpoint_host='\''\(.station)'\''
+uci set network.@wireguard_wg0[-1].endpoint_port='\''51820'\''"
   ' <<< "${raw_json}"
 fi
