@@ -59,19 +59,21 @@ Options:
 
 ```bash
 export NORDVPN_TOKEN="${your-nordvpn_token}"
-./nordvpn-wireguard-recommended.sh "United Kingdom"
+./nordvpn-wireguard-recommended.sh "United Kingdom" > united-kingdom.conf
 ```
 
 <details>
   <summary>Output</summary>
 
 ```bash
+# STDOUT
 COUNTRY   United Kingdom
 CITY      London
 HOSTNAME  uk2736.nordvpn.com
 LOAD      14
 NAME      uk2736.nordvpn.com
 
+# united-kingdom.conf
 [Interface]
 PrivateKey = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 Address = 10.5.0.2/16
