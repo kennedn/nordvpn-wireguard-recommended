@@ -116,7 +116,6 @@ uci set network.@wireguard_wg0[-1].public_key='XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 uci set network.@wireguard_wg0[-1].endpoint_host='nl1234.nordvpn.com'
 uci set network.@wireguard_wg0[-1].endpoint_port='51820'
 uci add_list network.@wireguard_wg0[-1].allowed_ips='0.0.0.0/0'
-uci add_list network.@wireguard_wg0[-1].allowed_ips='::/0'
 uci set network.@wireguard_wg0[-1].persistent_keepalive='25'
 ```
 
