@@ -45,14 +45,18 @@ It supports the following methods:
 ## Usage
 
 ```bash
-usage: nordvpn-wireguard-recommended.sh [OPTION] [SEARCH]...
+usage: ./nordvpn-wireguard-recommended.sh [OPTION] [SEARCH]...
 Select a NordVPN country and print recommended NordLynx config
 
 Options:
   --wg
         output WireGuard config (default)
+  --uci-full
+        output Full OpenWRT UCI commands for initial setup of wireguard interface
   --uci
-        output OpenWRT UCI commands
+        output OpenWRT UCI commands for updating a pre-existing wireguard interface
+  -h, --help
+        print this message
 ```
 
 ## Example
